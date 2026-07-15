@@ -1021,7 +1021,6 @@ class PolymodAssetLibrary
 
         if (font != null)
         {
-          // Check if font is already registered before registering
           @:privateAccess
           if (!Font.__fontByName.exists(font.fontName))
           {
@@ -1046,7 +1045,7 @@ class PolymodAssetLibrary
    */
   public function stripAssetsPrefix(id:String):String
   {
-    if (Util.uIndexOf(id, assetPrefix) == 0)
+    if (id.startsWith(assetPrefix))
     {
       id = Util.uSubstring(id, assetPrefix.length);
     }
@@ -1062,7 +1061,7 @@ class PolymodAssetLibrary
    */
   public function prependAssetsPrefix(id:String):String
   {
-    if (Util.uIndexOf(id, assetPrefix) == 0)
+    if (id.startsWith(assetPrefix))
     {
       return id;
     }

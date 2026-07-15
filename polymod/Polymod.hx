@@ -215,6 +215,8 @@ class Polymod
    */
   public static var onError:Null<PolymodError->Void> = null;
 
+  public static var onScriptsLoaded:Null<Void->Void> = null;
+
   /**
    * The internal asset library used by Polymod.
    */
@@ -267,6 +269,7 @@ class Polymod
     params.dirs ??= [];
     params.ignoredFiles ??= [];
 
+    var shouldLoadMods:Bool = params.modIds.length == 0 && params.dirs.length == 0;
     if (params.fileSystemParams == null) params.fileSystemParams = {modRoot: modRoot};
     if (params.fileSystemParams.modRoot == null) params.fileSystemParams.modRoot = modRoot;
     if (params.apiVersionRule == null) params.apiVersionRule = VersionUtil.DEFAULT_VERSION_RULE;
@@ -893,6 +896,7 @@ class Polymod
       #end
       polymod.hscript._internal.Interp.validateImports();
 
+      if (Polymod.onScriptsLoaded != null) Polymod.onScriptsLoaded();
       return results;
     }
   }
@@ -939,6 +943,8 @@ class Polymod
     return lime.app.Promises.allSettled(futures).then((results) -> {
       // Once all scripts have been registered, THEN validate the imports.
       polymod.hscript._internal.Interp.validateImports();
+
+      if (Polymod.onScriptsLoaded != null) Polymod.onScriptsLoaded();
 
       return lime.app.Future.withValue(results);
     });
