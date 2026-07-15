@@ -1044,7 +1044,7 @@ class PolymodAssetLibrary
   {
     if (id.startsWith(assetPrefix))
     {
-      id = Util.uSubstring(id, assetPrefix.length);
+      return Util.uSubstr(id, assetPrefix.length);
     }
     return id;
   }

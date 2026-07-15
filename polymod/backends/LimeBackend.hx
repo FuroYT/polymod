@@ -480,7 +480,7 @@ class LimeModLibrary extends LimeAssetLibrary
     this.libraryId = libraryId;
     this.fallback = fallback;
     super();
-    
+
     #if html5
     imageCache = new Map<String, lime.graphics.Image>();
     @:nullSafety(Off)
@@ -576,7 +576,7 @@ class LimeModLibrary extends LimeAssetLibrary
 
   /**
    * Returns true if the asset of the given id and type exists.
-       * Takes into account mods and locales, if available.
+   * Takes into account mods and locales, if available.
    */
   public override function exists(id:String, assetType:String):Bool
   {
