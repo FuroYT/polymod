@@ -217,6 +217,13 @@ class Polymod
 
   public static var onScriptsLoaded:Null<Void->Void> = null;
 
+  public static var modRoot(get, never):String;
+
+  static function get_modRoot():String
+  {
+    return assetLibrary?.fileSystem?.modRoot ?? "./mods";
+  }
+
   /**
    * The internal asset library used by Polymod.
    */

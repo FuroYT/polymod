@@ -114,12 +114,7 @@ class Util
     var extension = uExtension(id, true);
     id = stripPrefix(id);
     // try the path first
-    var format:BaseParseFormat = parseRules.get(id);
-    if (format == null)
-    {
-      // try the extension then
-      format = parseRules.get(extension);
-    }
+    var format:BaseParseFormat = parseRules.get(id) ?? parseRules.get(extension);
     if (format != null)
     {
       var appendText = getModText(Util.pathJoin(PolymodConfig.appendFolder, id), modId);
@@ -291,21 +286,30 @@ class Util
 
   public static inline function pathMerge(id:String, theDir:String = ''):String
   {
-    return pathSpecial(id, PolymodConfig.mergeFolder, theDir);
+    return appendPrefix(pathSpecial(id, PolymodConfig.mergeFolder, theDir), withTrailingSlash(Path.normalize(Polymod.modRoot)));
   }
 
   private static inline function pathAppend(id:String, theDir:String = ''):String
   {
-    return pathSpecial(id, PolymodConfig.appendFolder, theDir);
+    return appendPrefix(pathSpecial(id, PolymodConfig.appendFolder, theDir), withTrailingSlash(Path.normalize(Polymod.modRoot)));
   }
 
   public static inline function stripPrefix(id:String, prefix:String = 'assets/'):String
   {
     if (id.startsWith(prefix))
     {
-      return uSubstring(id, prefix.length);
+      return uSubstr(id, prefix.length);
     }
     return id;
+  }
+
+  public static inline function appendPrefix(id:String, prefix:String = 'assets/'):String
+  {
+    if (id.startsWith(prefix))
+    {
+      return id;
+    }
+    return prefix + id;
   }
 
   public static function pathSpecial(id:String, special:String = '', theDir:String = ''):String
