@@ -532,7 +532,7 @@ class LimeModLibrary extends LimeAssetLibrary
   {
     // On HTML5, we need to call `loadImage()` on all sounds before they can be later loaded synchronously.
 
-    for (soundAsset in Util.filterUnique(this.list(AssetType.SOUND).concat(this.list(AssetType.MUSIC))))
+    for (soundAsset in this.list(AssetType.SOUND))
     {
       var symbol = new IdAndLibrary(soundAsset, this);
       var filePath = p.file(symbol.modId);
