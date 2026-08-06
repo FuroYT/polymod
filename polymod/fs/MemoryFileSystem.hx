@@ -9,6 +9,10 @@ import thx.semver.VersionRule;
 import polymod.fs.PolymodFileSystem.IFileSystem;
 import polymod.fs.PolymodFileSystem.PolymodFileSystemParams;
 
+#if lime
+import lime.app.Future;
+#end
+
 /**
  * This simple virtual file system demonstrates that anything can be used
  * as the backend filesystem for Polymod, as long as you can fulfill the
@@ -253,6 +257,28 @@ class MemoryFileSystem implements IFileSystem
     return files.get(path);
   }
 
+  #if lime
+  /**
+   * Load the byte data for a file asynchronously.
+   *
+   * @param path The path to retrieve byte data from.
+   * @return A future which returns the file bytes.
+   */
+  public function loadFileBytes(path:String):Future<Bytes>
+  {
+    var performWork:Void->Bytes = () -> {
+      var result = getFileBytes(path);
+      if (result == null)
+      {
+        throw 'Could not load file bytes $path';
+      }
+      return result;
+    };
+
+    return new Future(performWork, true);
+  }
+  #end
+
   /**
    * Get the byte data for a file from a specific mod.
    *
@@ -260,7 +286,7 @@ class MemoryFileSystem implements IFileSystem
    * @param modId A specific mod ID to retrieve an asset from.
    * @return The file bytes, or `null` if it couldn't be fetched.
    */
-  public function getFileBytesByModId(path:String, modId:String):Null<haxe.io.Bytes>
+  public function getFileBytesByModId(path:String, modId:String):Null<Bytes>
   {
     var modDir:Null<String> = scanModDirectoriesForId(modId);
     if (modDir == null) return null;
@@ -268,6 +294,24 @@ class MemoryFileSystem implements IFileSystem
 
     return getFileBytes(Util.pathJoin(relativeDir, path));
   }
+
+  #if lime
+  /**
+   * Load the byte data for a file from a specific mod, asynchronously.
+   *
+   * @param path The path to retrieve byte data from, relative to the asset root.
+   * @param modId A specific mod ID to retrieve an asset from.
+   * @return A future which returns the file bytes.
+   */
+  public function loadFileBytesByModId(path:String, modId:String):Future<Bytes>
+  {
+    var modDir:Null<String> = scanModDirectoriesForId(modId);
+    if (modDir == null) return null;
+    var relativeDir = Util.pathJoin(modRoot, modDir);
+
+    return loadFileBytes(Util.pathJoin(relativeDir, path));
+  }
+  #end
 
   /**
    * Returns a list of files contained within the provided directory path.
